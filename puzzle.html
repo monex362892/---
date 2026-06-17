@@ -20,6 +20,17 @@ body {
     transition: background 0.2s ease;
 }
 
+#timer {
+    font-size: 120px;
+    font-weight: bold;
+}
+
+#text {
+    font-size: 42px;
+    text-align: center;
+    margin-top: 20px;
+}
+
 #topbar {
     position: fixed;
     top: 0;
@@ -27,25 +38,13 @@ body {
     width: 100%;
     background: white;
     color: black;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     gap: 10px;
     padding: 10px;
     font-size: 18px;
     z-index: 10;
-}
-
-#timer {
-    font-size: 120px;
-    font-weight: bold;
-    margin-top: 60px;
-}
-
-#text {
-    font-size: 42px;
-    text-align: center;
-    margin-top: 20px;
 }
 
 .redFlash {
@@ -65,6 +64,7 @@ body {
 let time = 30;
 let timerEl = document.getElementById("timer");
 let textEl = document.getElementById("text");
+let topbar = document.getElementById("topbar");
 
 function startTimer() {
     let interval = setInterval(() => {
@@ -82,7 +82,6 @@ function startTimer() {
 function redSequence() {
     document.body.classList.add("redFlash");
     timerEl.style.display = "none";
-    textEl.innerText = "";
 
     setTimeout(() => {
         document.body.classList.remove("redFlash");
@@ -98,6 +97,9 @@ function redSequence() {
                 textEl.style.fontSize = "34px";
                 textEl.style.color = "white";
                 textEl.innerText = "TikTokBlackCircus";
+
+                topbar.style.display = "flex";
+
             }, 2000);
 
         }, 2000);
