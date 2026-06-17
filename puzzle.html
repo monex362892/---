@@ -8,86 +8,72 @@
 <style>
 body {
     margin: 0;
-    background: black;
-    color: white;
-    font-family: Arial;
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    background: black;
+    color: white;
+    font-family: Arial;
     overflow: hidden;
-    text-align: center;
+    transition: background 0.2s ease;
 }
 
 #timer {
-    font-size: 110px;
+    font-size: 120px;
     font-weight: bold;
 }
 
 #text {
-    font-size: 36px;
+    font-size: 42px;
+    text-align: center;
     margin-top: 20px;
-    padding: 0 20px;
-    line-height: 1.3;
 }
 
-.flash {
-    animation: flash 0.2s infinite;
-}
-
-@keyframes flash {
-    0% { background: black; }
-    50% { background: red; }
-    100% { background: black; }
-}
-
-/* ещё сильнее под маленькие экраны */
-@media (max-width: 600px) {
-    #timer {
-        font-size: 140px;
-    }
-
-    #text {
-        font-size: 44px;
-    }
+.redFlash {
+    background: red !important;
 }
 </style>
 </head>
 
 <body>
 
-<div id="timer">60</div>
+<div id="timer">30</div>
 <div id="text"></div>
 
 <script>
-let time = 60;
+let time = 30;
 let timerEl = document.getElementById("timer");
 let textEl = document.getElementById("text");
 
-let interval = setInterval(() => {
-    time--;
-    timerEl.innerText = time;
+function startTimer() {
+    let interval = setInterval(() => {
+        time--;
+        timerEl.innerText = time;
+        timerEl.style.color = `rgb(255, ${time * 8}, ${time * 8})`;
 
-    if (time <= 0) {
-        clearInterval(interval);
-        startSequence();
-    }
-}, 1000);
+        if (time <= 0) {
+            clearInterval(interval);
+            redSequence();
+        }
+    }, 1000);
+}
 
-function startSequence() {
-    document.body.classList.add("flash");
+function redSequence() {
+    document.body.classList.add("redFlash");
+    timerEl.style.display = "none";
+    textEl.innerText = "";
 
     setTimeout(() => {
-        document.body.classList.remove("flash");
-        timerEl.style.display = "none";
+        document.body.classList.remove("redFlash");
 
         textEl.innerText = "Лоренцо вас нашел…";
 
         setTimeout(() => {
-            textEl.style.fontSize = "60px";
+            textEl.style.fontSize = "70px";
             textEl.style.color = "red";
-            textEl.innerText = "БЕГИ!RUN!RUN!";
+            textEl.innerText = "БЕГИ!";
 
             setTimeout(() => {
                 textEl.style.fontSize = "34px";
@@ -97,8 +83,10 @@ function startSequence() {
 
         }, 2000);
 
-    }, 2000);
+    }, 5000);
 }
+
+startTimer();
 </script>
 
 </body>
