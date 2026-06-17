@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Lorenzo's Black Circus</title>
+
+<style>
+body {
+    margin: 0;
+    background: white;
+    font-family: Arial;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    transition: background 0.5s ease;
+}
+
+h1 {
+    color: red;
+}
+
+#board {
+    width: 300px;
+    height: 300px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+
+.tile {
+    background: #eee;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 22px;
+    user-select: none;
+    cursor: grab;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Lorenzo's Black Circus</h1>
+
+<div id="board"></div>
+
+<script>
+// ---------- ЗВУК ----------
+let noise = new Audio("https://actions.google.com/sounds/v1/ambiences/electronic_noise.ogg");
+noise.loop = true;
+noise.volume = 0.3;
+
+let scream = new Audio("https://actions.google.com/sounds/v1/human_voices/scream_horror.ogg");
+scream.volume = 1;
+
+// звук запускается после первого действия (iPhone fix)
+document.body.addEventListener("click", () => {
+    noise.play().catch(()=>{});
+}, { once: true });
+
+// ---------- ПАЗЛ ----------
+let correct = ["L","O","R","E","N","Z","O","_","X"];
+let tiles = [...correct].sort(() => Math.random() - 0.5);
+
+const board = document.getElementById("board");
+
+function render() {
+    board.innerHTML = "";
+
+    tiles.forEach((t, i) => {
+        let div = document.createElement("div");
+        div.className = "tile";
+        div.innerText = t;
+        div.draggable = true;
+
+        div.ondragstart = (e) => {
+            e.dataTransfer.setData("from", i);
+        };
+
+        div.ondragover = (e) => e.preventDefault();
+
+        div.ondrop = (e) => {
+            let from = e.dataTransfer.getData("from");
+
+            [tiles[from], tiles[i]] = [tiles[i], tiles[from]];
+
+            render();
+            check();
+        };
+
+        board.appendChild(div);
+    });
+}
+
+function check() {
+    if (tiles.join("") === correct.join("")) {
+
+        // шум резко затихает
+        noise.volume = 0;
+
+        setTimeout(() => {
+            document.body.style.background = "red";
+            document.body.innerHTML = `
+                <div style="
+                    color:white;
+                    font-size:28px;
+                    height:100vh;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-family:Arial;
+                    text-align:center;
+                ">
+                Лоренцо увидел вас
+                </div>
+            `;
+
+            // громкий неприятный звук
+            scream.play();
+
+        }, 500);
+    }
+}
+
+render();
+</script>
+
+</body>
+</html>
